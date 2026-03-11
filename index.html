@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Communal Poker">
-<title>Communal Poker</title>
+<meta name="apple-mobile-web-app-title" content="Slow Burn Poker">
+<title>Slow Burn Poker</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body, #root { width: 100%; height: 100%; overflow: hidden; }
@@ -681,8 +681,8 @@ function SidePanel({ phase, currentRound, roundInfo, playerScore, aiScore, round
           fontSize: 18, fontWeight: 700, letterSpacing: 1,
           background: "linear-gradient(180deg, #f5d998 0%, #c9973b 100%)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-        }}>COMMUNAL POKER</div>
-        <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginTop: 4 }}>A Game of Strategy</div>
+        }}>SLOW BURN POKER</div>
+        <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginTop: 4 }}>Every Card Counts</div>
       </div>
 
       {/* Scores */}
@@ -846,6 +846,7 @@ function CommunalPoker() {
   const [tiebreaker, setTiebreaker] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [aiDiscardCounts, setAiDiscardCounts] = useState([]);
+  const [showRules, setShowRules] = useState(false);
   const opponentModelRef = useRef(createOpponentModel());
 
   const startGame = useCallback(() => {
@@ -1032,6 +1033,119 @@ function CommunalPoker() {
         color: "#f0e6d3", overflow: "hidden", minHeight: 0,
       }}>
 
+        {/* Rules info button — top right */}
+        <button
+          onClick={() => setShowRules(true)}
+          onTouchEnd={(e) => { e.preventDefault(); setShowRules(true); }}
+          style={{
+            position: "absolute", top: 10, right: 10, zIndex: 20,
+            width: 36, height: 36, borderRadius: "50%",
+            background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)",
+            color: "#f0e6d3", fontSize: 18, fontWeight: 700,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", touchAction: "manipulation",
+            WebkitTapHighlightColor: "transparent",
+            fontFamily: "'Georgia', serif", lineHeight: 1,
+          }}
+        >?</button>
+
+        {/* Rules Modal */}
+        {showRules && (
+          <div style={{
+            position: "absolute", inset: 0, zIndex: 100,
+            background: "rgba(0,0,0,0.85)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: 16,
+          }}
+            onClick={() => setShowRules(false)}
+            onTouchEnd={(e) => { e.preventDefault(); setShowRules(false); }}
+          >
+            <div
+              style={{
+                background: "linear-gradient(180deg, #1a3a22 0%, #12291a 100%)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 16, padding: "24px 20px", maxWidth: 420, width: "100%",
+                maxHeight: "85vh", overflowY: "auto", WebkitOverflowScrolling: "touch",
+                color: "#e8e0cc", fontFamily: "'Segoe UI', sans-serif",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+              }}
+              data-scrollable
+              onClick={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <div style={{
+                  fontSize: 20, fontWeight: 700, fontFamily: "'Georgia', serif",
+                  background: "linear-gradient(180deg, #f5d998 0%, #c9973b 100%)",
+                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                }}>How to Play</div>
+                <button
+                  onClick={() => setShowRules(false)}
+                  onTouchEnd={(e) => { e.preventDefault(); setShowRules(false); }}
+                  style={{
+                    background: "none", border: "1px solid rgba(255,255,255,0.15)",
+                    borderRadius: 6, color: "#f0e6d3", fontSize: 16, cursor: "pointer",
+                    padding: "4px 10px", touchAction: "manipulation",
+                  }}
+                >\u2715</button>
+              </div>
+
+              <div style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.9 }}>
+                <div style={{ fontWeight: 700, color: "#f1c40f", fontSize: 14, marginBottom: 4 }}>Overview</div>
+                <p style={{ marginBottom: 12 }}>
+                  Slow Burn Poker is a 3-round card strategy game against an AI opponent.
+                  You each receive 10 cards. Each round, you select cards from your hand to
+                  combine with a shared card in The Pot to form the best poker hand.
+                  Stakes escalate each round — plan ahead or burn out early.
+                </p>
+
+                <div style={{ fontWeight: 700, color: "#f1c40f", fontSize: 14, marginBottom: 4 }}>Each Round</div>
+                <p style={{ marginBottom: 6 }}>
+                  <span style={{ color: "#e74c3c", fontWeight: 600 }}>1. A shared card</span> is added to The Pot (visible to both players).
+                </p>
+                <p style={{ marginBottom: 6 }}>
+                  <span style={{ color: "#e74c3c", fontWeight: 600 }}>2. Discard phase:</span> Swap up to 3 cards from your hand for new ones from the deck. Or keep all if you're happy.
+                </p>
+                <p style={{ marginBottom: 12 }}>
+                  <span style={{ color: "#e74c3c", fontWeight: 600 }}>3. Play phase:</span> Select cards from your hand to play. They combine with The Pot to form your poker hand.
+                </p>
+
+                <div style={{ fontWeight: 700, color: "#f1c40f", fontSize: 14, marginBottom: 4 }}>Round Structure</div>
+                <p style={{ marginBottom: 4 }}>
+                  <span style={{ fontWeight: 600 }}>Round I</span> — Play 2 cards + 1 pot card = 3-card hand (1 pt base)
+                </p>
+                <p style={{ marginBottom: 4 }}>
+                  <span style={{ fontWeight: 600 }}>Round II</span> — Play 3 cards + 2 pot cards = best 5 of 5 (2 pts base)
+                </p>
+                <p style={{ marginBottom: 12 }}>
+                  <span style={{ fontWeight: 600 }}>Round III</span> — Play 4 cards + 3 pot cards = best 5 of 7 (3 pts base)
+                </p>
+
+                <div style={{ fontWeight: 700, color: "#f1c40f", fontSize: 14, marginBottom: 4 }}>Scoring</div>
+                <p style={{ marginBottom: 12 }}>
+                  The winner of each round earns the base points plus a bonus equal to the
+                  difference in hand rank (e.g. a Flush beating a Pair earns extra).
+                  If scores are tied after 3 rounds, leftover cards break the tie.
+                </p>
+
+                <div style={{ fontWeight: 700, color: "#f1c40f", fontSize: 14, marginBottom: 4 }}>Strategy Tips</div>
+                <p style={{ marginBottom: 6 }}>
+                  \u2022 Round III is worth the most — don't burn your best cards early.
+                </p>
+                <p style={{ marginBottom: 6 }}>
+                  \u2022 Watch the Foe's discard count — if they keep all cards, they're confident.
+                </p>
+                <p style={{ marginBottom: 6 }}>
+                  \u2022 The Pot cards are shared — build hands that synergize with what's showing.
+                </p>
+                <p style={{ marginBottom: 6 }}>
+                  \u2022 Use the live hand preview to see your hand rank as you select cards.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Start */}
         {phase === PHASES.START && (
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20, zIndex: 1 }}>
@@ -1039,9 +1153,9 @@ function CommunalPoker() {
               fontSize: 36, fontWeight: 700, fontFamily: "'Georgia', serif",
               background: "linear-gradient(180deg, #f5d998 0%, #c9973b 100%)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            }}>COMMUNAL POKER</div>
+            }}>SLOW BURN POKER</div>
             <div style={{ fontSize: 14, opacity: 0.6, maxWidth: 380, textAlign: "center", lineHeight: 1.6 }}>
-              Three rounds. Escalating stakes. Play your cards wisely — the final round decides all.
+              Three rounds. Rising stakes. Every discard is a gamble, every card played is a commitment. The final round decides it all.
             </div>
             <button onClick={startGame} style={btn("#27ae60", "#2ecc71")}>Deal Cards</button>
           </div>
@@ -1081,9 +1195,9 @@ function CommunalPoker() {
 
         {/* Active Game */}
         {phase !== PHASES.START && phase !== PHASES.GAME_OVER && (
-          <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, zIndex: 1 }}>
+          <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, zIndex: 1, paddingTop: "2vh", paddingBottom: "1vh" }}>
             {/* Opponent hand */}
-            <div style={{ display: "flex", justifyContent: "center", padding: "2px 0 2px", flexShrink: 0 }}>
+            <div style={{ display: "flex", justifyContent: "center", padding: "4px 0 4px", flexShrink: 0 }}>
               <div style={{ display: "flex" }}>
                 {aiHand.map((card, i) => <Card key={card.id} card={card} faceDown={!showAiCards} small overlap={i > 0} index={i} />)}
               </div>
@@ -1125,9 +1239,9 @@ function CommunalPoker() {
                 background: "rgba(0,0,0,0.15)", border: "1px solid rgba(255,255,255,0.06)",
                 minWidth: 240, textAlign: "center",
               }}>
-                <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", opacity: 0.4, marginBottom: 6 }}>Communal Cards</div>
+                <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", opacity: 0.4, marginBottom: 6 }}>The Pot</div>
                 <div style={{ display: "flex", justifyContent: "center", gap: 10, minHeight: 50 }}>
-                  {communalCards.length === 0 && <div style={{ opacity: 0.2, fontSize: 13, alignSelf: "center" }}>Cards will appear here</div>}
+                  {communalCards.length === 0 && <div style={{ opacity: 0.2, fontSize: 13, alignSelf: "center" }}>Shared cards appear here</div>}
                   {communalCards.map(c => <Card key={c.id} card={c} glowing />)}
                 </div>
               </div>
@@ -1179,7 +1293,7 @@ function CommunalPoker() {
             )}
 
             {/* Player hand */}
-            <div style={{ padding: "8px 0 2px", flexShrink: 0 }}>
+            <div style={{ padding: "6px 0 0", flexShrink: 0 }}>
               <div style={{ textAlign: "center", fontSize: 10, textTransform: "uppercase", letterSpacing: 1.5, opacity: 0.5, marginBottom: 4 }}>
                 Your Hand ({playerHand.length})
                 {isDiscard && <span style={{ color: "#f1c40f", opacity: 1 }}> · Select up to {roundInfo.maxDiscard} to discard</span>}
@@ -1197,7 +1311,7 @@ function CommunalPoker() {
             </div>
 
             {/* Buttons — always pinned at bottom */}
-            <div style={{ display: "flex", justifyContent: "center", gap: 10, padding: "10px 0 12px", flexShrink: 0 }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: 10, padding: "8px 0 6px", flexShrink: 0 }}>
               {isDiscard && (
                 <button onClick={confirmDiscard} style={btn("#27ae60", "#2ecc71")}>
                   {selected.size === 0 ? "Keep All" : `Discard ${selected.size}`}
